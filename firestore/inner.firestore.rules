@@ -1,0 +1,13 @@
+
+function userIsRecorder() {
+  return isAuthenticated() && callerHasRole("recorder");
+}
+
+function userIsLabeller() {
+  return isAuthenticated() && callerHasRole("labeller");
+}
+
+match /itl_samples/{adviceId} {
+  allow read: if userIsLabeller() || userIsRecorder();
+  allow write: if userIsLabeller() || userIsRecorder();
+}
