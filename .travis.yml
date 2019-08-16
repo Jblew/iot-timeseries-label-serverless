@@ -1,0 +1,27 @@
+dist: xenial
+language: node_js
+sudo: false
+
+branches:
+    except:
+        - /^v[0-9]/
+
+before_install:
+    - npm i -g npm
+
+install:
+    - npm i -g firebase firebase-tools
+    - npm install --prefix=./firestore
+    - firebase setup:emulators:firestore
+
+script:
+    - npm run --prefix=./firestore gen-rules
+    - npm run --prefix=./firestore test
+
+deploy:
+    - provider: script
+      script: bash -c "npx firebase deploy --only firestore"
+      skip_cleanup: true
+      on:
+          tags: false
+          branch: master
